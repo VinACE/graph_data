@@ -119,7 +119,7 @@
     {"app": "A7", "function": "F26"},
     {"app": "A7", "function": "F27"},
     {"app": "A7", "function": "F28"},
-    {"app": "A7", "function": "F5"},   // TravelBooking also uses checkout
+    {"app": "A7", "function": "F5"},   
 
     {"app": "A8", "function": "F29"},
     {"app": "A8", "function": "F30"},
@@ -135,7 +135,7 @@
     {"app": "A10", "function": "F38"},
     {"app": "A10", "function": "F39"},
     {"app": "A10", "function": "F40"},
-    {"app": "A10", "function": "F5"}   // AnalyticsDashboard also uses checkout
+    {"app": "A10", "function": "F5"}  
   ],
   "function_variable_edges": [
     {"function": "F1", "variable": "V1"},
