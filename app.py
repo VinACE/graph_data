@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 import sys
 from graph_query import GraphQuery
 
-graph = GraphDemo("graph_data.json")
+graph = GraphQuery("graph_data.json")
 app = Flask(__name__)
 
 # ---------------- REST API ----------------
