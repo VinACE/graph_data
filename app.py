@@ -60,7 +60,7 @@ if __name__ == "__main__":
 """
 
 from fastapi import FastAPI
-from typing import List
+from typing import List, Dict
 from graph_query import GraphQuery
 
 graph = GraphQuery("graph_data.json")
@@ -73,23 +73,24 @@ app = FastAPI(
 # ---------------- REST API ----------------
 @app.get("/functions/{app_name}", response_model=List[str], summary="Get functions by application")
 def functions_by_app(app_name: str):
-    return graph.get_functions_by_app(app_name)
+    return graph.get_functions_for_app(app_name)
 
 @app.get("/apps/{fn_name}", response_model=List[str], summary="Get applications by function")
 def apps_by_function(fn_name: str):
-    return graph.get_apps_by_function(fn_name)
+    return graph.get_apps_for_function(fn_name)
 
 @app.get("/variables/function/{fn_name}", response_model=List[str], summary="Get variables by function")
 def vars_by_function(fn_name: str):
-    return graph.get_variables_by_function(fn_name)
+    return graph.get_variables_for_function(fn_name)
 
-@app.get("/variables/app/{app_name}", response_model=List[str], summary="Get variables by application")
+@app.get("/variables/app/{app_name}", response_model=Dict[str, List[str]], summary="Get variables by application")
 def vars_by_app(app_name: str):
-    return graph.get_variables_by_app(app_name)
+    # GraphQuery doesn’t have get_variables_for_app, so we use get_app_structure
+    return graph.get_app_structure(app_name)
 
 @app.get("/functions/variable/{var_name}", response_model=List[str], summary="Get functions by variable")
 def funcs_by_variable(var_name: str):
-    return graph.get_functions_by_variable(var_name)
+    return graph.get_functions_for_variable(var_name)
 
 # ---------------- Run ----------------
-# Run with: uvicorn app:app --host 0.0.0.0 --port 5000 --reload
+# Run the API with: uvicorn app:app --host 0.0.0.0 --port 5000 --reload
