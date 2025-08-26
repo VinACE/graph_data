@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+"""from flask import Flask, request, jsonify
 import sys
 from graph_query import GraphQuery
 
@@ -57,3 +57,39 @@ if __name__ == "__main__":
         cli()
     else:
         app.run(host="0.0.0.0", port=5000, debug=True)
+"""
+
+from fastapi import FastAPI
+from typing import List
+from graph_query import GraphQuery
+
+graph = GraphQuery("graph_data.json")
+app = FastAPI(
+    title="Graph Data API",
+    description="REST API for querying applications, functions, and variables from a graph dataset.",
+    version="1.0.0",
+)
+
+# ---------------- REST API ----------------
+@app.get("/functions/{app_name}", response_model=List[str], summary="Get functions by application")
+def functions_by_app(app_name: str):
+    return graph.get_functions_by_app(app_name)
+
+@app.get("/apps/{fn_name}", response_model=List[str], summary="Get applications by function")
+def apps_by_function(fn_name: str):
+    return graph.get_apps_by_function(fn_name)
+
+@app.get("/variables/function/{fn_name}", response_model=List[str], summary="Get variables by function")
+def vars_by_function(fn_name: str):
+    return graph.get_variables_by_function(fn_name)
+
+@app.get("/variables/app/{app_name}", response_model=List[str], summary="Get variables by application")
+def vars_by_app(app_name: str):
+    return graph.get_variables_by_app(app_name)
+
+@app.get("/functions/variable/{var_name}", response_model=List[str], summary="Get functions by variable")
+def funcs_by_variable(var_name: str):
+    return graph.get_functions_by_variable(var_name)
+
+# ---------------- Run ----------------
+# Run with: uvicorn app:app --host 0.0.0.0 --port 5000 --reload
