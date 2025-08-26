@@ -63,39 +63,44 @@ from typing import List, Dict
 from graph_query import GraphQuery
 from fastapi.staticfiles import StaticFiles
 
-# ---------------- Create FastAPI app ----------------
+# ---------------- FastAPI app ----------------
 app = FastAPI(
     title="Graph Data API",
     description="REST API for querying applications, functions, and variables from a graph dataset.",
     version="1.0.0",
 )
 
-# ---------------- Mount frontend static files ----------------
+# ---------------- Mount frontend ----------------
 app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
 
 # ---------------- Initialize GraphQuery ----------------
 graph = GraphQuery("graph_data.json")
 
 # ---------------- REST API ----------------
-@app.get("/functions/{app_name}", response_model=List[str], summary="Get functions by application")
+@app.get("/functions/{app_name}", response_model=List[str])
 def functions_by_app(app_name: str):
-    return graph.get_functions_for_app(app_name)
+    result = graph.get_functions_for_app(app_name)
+    return result or []
 
-@app.get("/apps/{fn_name}", response_model=List[str], summary="Get applications by function")
+@app.get("/apps/{fn_name}", response_model=List[str])
 def apps_by_function(fn_name: str):
-    return graph.get_apps_for_function(fn_name)
+    result = graph.get_apps_for_function(fn_name)
+    return result or []
 
-@app.get("/variables/function/{fn_name}", response_model=List[str], summary="Get variables by function")
+@app.get("/variables/function/{fn_name}", response_model=List[str])
 def vars_by_function(fn_name: str):
-    return graph.get_variables_for_function(fn_name)
+    result = graph.get_variables_for_function(fn_name)
+    return result or []
 
-@app.get("/variables/app/{app_name}", response_model=Dict[str, List[str]], summary="Get variables by application")
+@app.get("/variables/app/{app_name}", response_model=Dict[str, List[str]])
 def vars_by_app(app_name: str):
-    return graph.get_app_structure(app_name)
+    result = graph.get_app_structure(app_name)
+    return result or {}
 
-@app.get("/functions/variable/{var_name}", response_model=List[str], summary="Get functions by variable")
+@app.get("/functions/variable/{var_name}", response_model=List[str])
 def funcs_by_variable(var_name: str):
-    return graph.get_functions_for_variable(var_name)
+    result = graph.get_functions_for_variable(var_name)
+    return result or []
 
 # ---------------- Run block ----------------
 if __name__ == "__main__":
