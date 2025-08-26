@@ -9,7 +9,7 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# Mount frontend folder
+# Mount frontend
 app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
 
 # Initialize GraphQuery
