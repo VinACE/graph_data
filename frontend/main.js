@@ -1,8 +1,5 @@
 // main.js
 
-// ---------------- Utility Functions ----------------
-
-// Fetch data from a given endpoint safely
 async function fetchData(url) {
     try {
         const response = await fetch(url);
@@ -18,79 +15,45 @@ async function fetchData(url) {
     }
 }
 
-// Render variables by application
 async function loadAppVariables(appName) {
     const data = await fetchData(`/variables/app/${appName}`);
-    console.log("Variables received:", data);
-
     if (data && typeof data === "object") {
         Object.entries(data).forEach(([key, value]) => {
-            console.log(`App: ${key}, Variables: ${value}`);
-            // Example: render to DOM or chart
-            // renderVariables(key, value);
+            console.log(`App: ${key}`, value);
+            // Insert rendering logic here
         });
-    } else {
-        console.warn("No variables data available for app:", appName);
     }
 }
 
-// Render functions by application
 async function loadFunctions(appName) {
     const data = await fetchData(`/functions/${appName}`);
-    console.log("Functions received:", data);
-
     if (Array.isArray(data)) {
-        data.forEach(fn => {
-            console.log(`Function: ${fn}`);
-            // Example: render to DOM or chart
-            // renderFunction(fn);
-        });
-    } else {
-        console.warn("No functions data available for app:", appName);
+        data.forEach(fn => console.log(`Function: ${fn}`));
     }
 }
 
-// Render applications by function
 async function loadApps(fnName) {
     const data = await fetchData(`/apps/${fnName}`);
-    console.log("Applications received:", data);
-
     if (Array.isArray(data)) {
-        data.forEach(app => {
-            console.log(`Application: ${app}`);
-            // Example: render to DOM or chart
-        });
-    } else {
-        console.warn("No applications data available for function:", fnName);
+        data.forEach(app => console.log(`Application: ${app}`));
     }
 }
 
-// Render functions by variable
 async function loadFuncsByVariable(varName) {
     const data = await fetchData(`/functions/variable/${varName}`);
-    console.log("Functions by variable received:", data);
-
     if (Array.isArray(data)) {
-        data.forEach(fn => {
-            console.log(`Function: ${fn}`);
-            // Example: render to DOM or chart
-        });
-    } else {
-        console.warn("No functions data available for variable:", varName);
+        data.forEach(fn => console.log(`Function: ${fn}`));
     }
 }
 
-// ---------------- Initialize Visualization ----------------
-document.addEventListener("DOMContentLoaded", async () => {
-    const exampleAppName = "shopping_app";  // Example application
-    const exampleFunctionName = "checkout"; // Example function
-    const exampleVariableName = "cart_items"; // Example variable
+// Initialize visualization when page loads
+document.addEventListener("DOMContentLoaded", () => {
+    const appName = "shopping_app";
+    const fnName = "checkout";
+    const varName = "cart_items";
 
-    // Load data
-    await loadAppVariables(exampleAppName);
-    await loadFunctions(exampleAppName);
-    await loadApps(exampleFunctionName);
-    await loadFuncsByVariable(exampleVariableName);
-
-    console.log("Frontend data fetch complete.");
+    loadAppVariables(appName);
+    loadFunctions(appName);
+    loadApps(fnName);
+    loadFuncsByVariable(varName);
 });
