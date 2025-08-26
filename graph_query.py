@@ -6,43 +6,49 @@ class GraphQuery:
         with open(data_file, "r") as f:
             self.data = json.load(f)
 
+    def _normalize(self, name: str) -> str:
+        """Convert name to lowercase and replace spaces with underscores"""
+        return name.strip().lower().replace(" ", "_")
+
     def get_functions_for_app(self, app_name: str) -> List[str]:
-        app = self.data.get(app_name)
-        if app and "functions" in app:
-            return app["functions"]
+        app_name_norm = self._normalize(app_name)
+        for key, value in self.data.items():
+            if self._normalize(key) == app_name_norm:
+                return value.get("functions", [])
         return []
 
     def get_apps_for_function(self, fn_name: str) -> List[str]:
-        fn_name = fn_name.lower()
+        fn_name_norm = self._normalize(fn_name)
         apps = [
             app_name
             for app_name, details in self.data.items()
-            if "functions" in details and any(fn.lower() == fn_name for fn in details["functions"])
+            if "functions" in details and any(self._normalize(fn) == fn_name_norm for fn in details["functions"])
         ]
         return apps
 
     def get_variables_for_function(self, fn_name: str) -> List[str]:
-        fn_name = fn_name.lower()
+        fn_name_norm = self._normalize(fn_name)
         vars_list = []
         for app in self.data.values():
             variables = app.get("variables", {})
             for func, vars_ in variables.items():
-                if func.lower() == fn_name:
+                if self._normalize(func) == fn_name_norm:
                     vars_list.extend(vars_)
         return vars_list
 
     def get_app_structure(self, app_name: str) -> Dict[str, List[str]]:
-        app = self.data.get(app_name)
-        if app and "variables" in app:
-            return app["variables"]
+        app_name_norm = self._normalize(app_name)
+        for key, value in self.data.items():
+            if self._normalize(key) == app_name_norm:
+                return value.get("variables", {})
         return {}
 
     def get_functions_for_variable(self, var_name: str) -> List[str]:
-        var_name = var_name.lower()
+        var_name_norm = self._normalize(var_name)
         funcs = []
         for app in self.data.values():
             variables = app.get("variables", {})
             for func, vars_ in variables.items():
-                if var_name in [v.lower() for v in vars_]:
+                if var_name_norm in [self._normalize(v) for v in vars_]:
                     funcs.append(func)
         return funcs
