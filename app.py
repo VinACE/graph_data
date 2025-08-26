@@ -58,21 +58,23 @@ if __name__ == "__main__":
     else:
         app.run(host="0.0.0.0", port=5000, debug=True)
 """
-
 from fastapi import FastAPI
 from typing import List, Dict
 from graph_query import GraphQuery
 from fastapi.staticfiles import StaticFiles
 
-app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
-
-
-graph = GraphQuery("graph_data.json")
+# ---------------- Create FastAPI app ----------------
 app = FastAPI(
     title="Graph Data API",
     description="REST API for querying applications, functions, and variables from a graph dataset.",
     version="1.0.0",
 )
+
+# ---------------- Mount frontend static files ----------------
+app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
+
+# ---------------- Initialize GraphQuery ----------------
+graph = GraphQuery("graph_data.json")
 
 # ---------------- REST API ----------------
 @app.get("/functions/{app_name}", response_model=List[str], summary="Get functions by application")
@@ -89,12 +91,13 @@ def vars_by_function(fn_name: str):
 
 @app.get("/variables/app/{app_name}", response_model=Dict[str, List[str]], summary="Get variables by application")
 def vars_by_app(app_name: str):
-    # GraphQuery doesn’t have get_variables_for_app, so we use get_app_structure
     return graph.get_app_structure(app_name)
 
 @app.get("/functions/variable/{var_name}", response_model=List[str], summary="Get functions by variable")
 def funcs_by_variable(var_name: str):
     return graph.get_functions_for_variable(var_name)
 
-# ---------------- Run ----------------
-# Run the API with: uvicorn app:app --host 0.0.0.0 --port 5000 --reload
+# ---------------- Run block ----------------
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=5000, log_level="info")
