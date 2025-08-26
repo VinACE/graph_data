@@ -62,6 +62,10 @@ if __name__ == "__main__":
 from fastapi import FastAPI
 from typing import List, Dict
 from graph_query import GraphQuery
+from fastapi.staticfiles import StaticFiles
+
+app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
+
 
 graph = GraphQuery("graph_data.json")
 app = FastAPI(
