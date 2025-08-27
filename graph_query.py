@@ -13,23 +13,18 @@ class GraphQuery:
         self.functions = self.data.get("functions", [])
         self.variables = self.data.get("variables", [])
 
-        # ---- DEBUG: print all edges on startup ----
+        # Debug: print edges on startup
         print("[DEBUG] Applications:", [self._get_name(a) for a in self.applications])
         print("[DEBUG] Functions:", [self._get_name(f) for f in self.functions])
-        print("[DEBUG] Variables:", [self._get_name(v) for v in self.variables])
-        print("[DEBUG] App-Function Edges:")
-        for edge in self.app_function_edges:
-            print("  ", edge)
-        print("[DEBUG] Function-Variable Edges:")
-        for edge in self.function_variable_edges:
-            print("  ", edge)
+        print("[DEBUG] App-Function Edges:", self.app_function_edges)
+        print("[DEBUG] Function-Variable Edges:", self.function_variable_edges)
 
     def _normalize(self, name: str) -> str:
-        """Normalize names: strip spaces, lowercase, replace spaces with underscores"""
-        return name.strip().lower().replace(" ", "_")
+        """Normalize names: strip spaces, lowercase, underscores"""
+        return name.strip().lower().replace(" ", "_").replace("-", "_")
 
     def _get_name(self, obj):
-        """Return the name if obj is dict, or obj itself if string."""
+        """Return name whether obj is dict or string"""
         if isinstance(obj, dict):
             return obj.get("name", "").strip()
         elif isinstance(obj, str):
