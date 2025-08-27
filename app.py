@@ -19,7 +19,6 @@ graph = GraphQuery("graph_data.json")
 
 @app.get("/apps", response_model=List[str])
 def list_apps():
-    """List all available apps"""
     apps = graph.list_apps()
     print(f"[DEBUG] Available apps: {apps}")
     return apps
