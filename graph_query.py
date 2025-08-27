@@ -6,25 +6,23 @@ class GraphQuery:
         with open(data_file, "r") as f:
             self.data = json.load(f)
 
-        # Edge lists (may contain strings or objects)
         self.app_function_edges = self.data.get("app_function_edges", [])
         self.function_variable_edges = self.data.get("function_variable_edges", [])
 
-        # Original objects
         self.applications = self.data.get("applications", [])
         self.functions = self.data.get("functions", [])
         self.variables = self.data.get("variables", [])
 
     def _normalize(self, name: str) -> str:
-        """Normalize names for matching (case and space insensitive)"""
+        """Normalize names: strip spaces, lowercase, replace spaces with underscores"""
         return name.strip().lower().replace(" ", "_")
 
     def _get_name(self, obj):
-        """Return the 'name' if obj is dict, or obj itself if string."""
+        """Return the name if obj is dict, or obj itself if string."""
         if isinstance(obj, dict):
-            return obj.get("name", "")
+            return obj.get("name", "").strip()
         elif isinstance(obj, str):
-            return obj
+            return obj.strip()
         return ""
 
     # ---------------- List all ----------------
