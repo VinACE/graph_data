@@ -3,81 +3,81 @@
     {
       "name": "InventorySystem",
       "functions": [
-        {"name": "addItem", "variables": ["itemName", "quantity", "price"]},
-        {"name": "removeItem", "variables": ["itemName", "quantity"]},
-        {"name": "updateStock", "variables": ["itemName", "newQuantity"]}
+        { "name": "addItem", "variables": ["itemId", "itemName", "quantity"] },
+        { "name": "removeItem", "variables": ["itemId", "quantity"] },
+        { "name": "loginUser", "variables": ["userId", "sessionToken"] }
       ]
     },
     {
       "name": "EcommercePlatform",
       "functions": [
-        {"name": "processOrder", "variables": ["orderId", "paymentMethod"]},
-        {"name": "cancelOrder", "variables": ["orderId", "reason"]},
-        {"name": "refundOrder", "variables": ["orderId", "amount"]}
+        { "name": "processPayment", "variables": ["userId", "orderId", "paymentMethod"] },
+        { "name": "addItem", "variables": ["cartId", "itemId", "quantity"] },
+        { "name": "loginUser", "variables": ["userId", "sessionToken"] }
       ]
     },
     {
       "name": "HRManagement",
       "functions": [
-        {"name": "hireEmployee", "variables": ["employeeName", "position"]},
-        {"name": "terminateEmployee", "variables": ["employeeId", "reason"]},
-        {"name": "approveLeave", "variables": ["employeeId", "days"]}
+        { "name": "addEmployee", "variables": ["employeeId", "name", "role"] },
+        { "name": "generatePayroll", "variables": ["employeeId", "salary"] },
+        { "name": "loginUser", "variables": ["userId", "sessionToken"] }
       ]
     },
     {
       "name": "BankingApp",
       "functions": [
-        {"name": "transferFunds", "variables": ["fromAccount", "toAccount", "amount"]},
-        {"name": "openAccount", "variables": ["customerName", "accountType"]},
-        {"name": "closeAccount", "variables": ["accountNumber"]}
+        { "name": "processPayment", "variables": ["userId", "transactionId", "amount"] },
+        { "name": "transferFunds", "variables": ["fromAccount", "toAccount", "amount"] },
+        { "name": "loginUser", "variables": ["userId", "sessionToken"] }
       ]
     },
     {
       "name": "HealthcareSystem",
       "functions": [
-        {"name": "bookAppointment", "variables": ["patientId", "doctorId", "time"]},
-        {"name": "issuePrescription", "variables": ["patientId", "medications"]},
-        {"name": "updateMedicalRecord", "variables": ["patientId", "record"]}
+        { "name": "addPatient", "variables": ["patientId", "name", "dob"] },
+        { "name": "scheduleAppointment", "variables": ["patientId", "doctorId", "date"] },
+        { "name": "loginUser", "variables": ["userId", "sessionToken"] }
       ]
     },
     {
       "name": "LearningPlatform",
       "functions": [
-        {"name": "enrollCourse", "variables": ["studentId", "courseId"]},
-        {"name": "gradeAssignment", "variables": ["studentId", "assignmentId", "grade"]},
-        {"name": "trackProgress", "variables": ["studentId", "courseId"]}
+        { "name": "enrollCourse", "variables": ["userId", "courseId"] },
+        { "name": "submitAssignment", "variables": ["userId", "assignmentId"] },
+        { "name": "sendMessage", "variables": ["userId", "messageId", "content"] }
       ]
     },
     {
       "name": "TravelBooking",
       "functions": [
-        {"name": "searchFlights", "variables": ["origin", "destination", "date"]},
-        {"name": "reserveHotel", "variables": ["hotelId", "checkIn", "checkOut"]},
-        {"name": "cancelBooking", "variables": ["bookingId"]}
+        { "name": "bookFlight", "variables": ["userId", "flightId", "paymentMethod"] },
+        { "name": "cancelBooking", "variables": ["bookingId"] },
+        { "name": "sendMessage", "variables": ["userId", "messageId", "content"] }
       ]
     },
     {
       "name": "MessagingApp",
       "functions": [
-        {"name": "sendMessage", "variables": ["fromUser", "toUser", "message"]},
-        {"name": "createGroup", "variables": ["groupName", "members"]},
-        {"name": "searchChatHistory", "variables": ["userId", "keywords"]}
+        { "name": "sendMessage", "variables": ["userId", "messageId", "content"] },
+        { "name": "deleteMessage", "variables": ["userId", "messageId"] },
+        { "name": "loginUser", "variables": ["userId", "sessionToken"] }
       ]
     },
     {
       "name": "SocialNetwork",
       "functions": [
-        {"name": "postStatus", "variables": ["userId", "content"]},
-        {"name": "likePost", "variables": ["userId", "postId"]},
-        {"name": "addFriend", "variables": ["userId", "friendId"]}
+        { "name": "postStatus", "variables": ["userId", "postId", "content"] },
+        { "name": "likePost", "variables": ["userId", "postId"] },
+        { "name": "sendMessage", "variables": ["userId", "messageId", "content"] }
       ]
     },
     {
       "name": "AnalyticsDashboard",
       "functions": [
-        {"name": "generateReport", "variables": ["reportType", "dateRange"]},
-        {"name": "trackMetrics", "variables": ["metricName", "dateRange"]},
-        {"name": "visualizeTrends", "variables": ["metricName", "timePeriod"]}
+        { "name": "generateReport", "variables": ["reportId", "dateRange"] },
+        { "name": "processPayment", "variables": ["userId", "reportId", "amount"] },
+        { "name": "loginUser", "variables": ["userId", "sessionToken"] }
       ]
     }
   ]
