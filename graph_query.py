@@ -2,104 +2,59 @@ import json
 from typing import List, Dict
 
 class GraphQuery:
-    def __init__(self, data_file: str):
-        with open(data_file, "r") as f:
+    def __init__(self, json_file: str):
+        with open(json_file, "r") as f:
             self.data = json.load(f)
 
-        self.app_function_edges = self.data.get("app_function_edges", [])
-        self.function_variable_edges = self.data.get("function_variable_edges", [])
+        # Normalize applications and functions for easier lookup
+        self.apps = {}
+        self.functions = {}
+        for app in self.data.get("applications", []):
+            app_name_norm = self._normalize(app["name"])
+            self.apps[app_name_norm] = {
+                "name": app["name"],
+                "functions": {}
+            }
+            for fn in app.get("functions", []):
+                fn_name_norm = self._normalize(fn["name"])
+                self.apps[app_name_norm]["functions"][fn_name_norm] = fn
+                self.functions[fn_name_norm] = self.functions.get(fn_name_norm, [])
+                self.functions[fn_name_norm].append(app["name"])
 
-        self.applications = self.data.get("applications", [])
-        self.functions = self.data.get("functions", [])
-        self.variables = self.data.get("variables", [])
-
-        print("[DEBUG] Applications:", [self._get_name(a) for a in self.applications])
-        print("[DEBUG] Functions:", [self._get_name(f) for f in self.functions])
-
-    # ---------------- Helper methods ----------------
     def _normalize(self, name: str) -> str:
-        """Lowercase and replace spaces/hyphens with underscores"""
         return name.strip().lower().replace(" ", "_").replace("-", "_")
 
-    def _get_name(self, obj):
-        if isinstance(obj, dict):
-            return obj.get("name", "").strip()
-        elif isinstance(obj, str):
-            return obj.strip()
-        return ""
-
-    # ---------------- List nodes ----------------
     def list_apps(self) -> List[str]:
-        return [self._get_name(app) for app in self.applications]
+        return [app["name"] for app in self.apps.values()]
 
-    def list_functions(self) -> List[str]:
-        return [self._get_name(fn) for fn in self.functions]
-
-    def list_variables(self) -> List[str]:
-        return [self._get_name(var) for var in self.variables]
-
-    # ---------------- Queries ----------------
     def get_functions_for_app(self, app_name: str) -> List[str]:
-        app_norm = self._normalize(app_name)
-        funcs = []
-        for edge in self.app_function_edges:
-            edge_app, edge_fn = self._parse_edge(edge)
-            if self._normalize(edge_app) == app_norm:
-                funcs.append(edge_fn)
-        print(f"[DEBUG] get_functions_for_app('{app_name}') -> {funcs}")
-        return funcs
+        app_name_norm = self._normalize(app_name)
+        app = self.apps.get(app_name_norm)
+        if not app:
+            return []
+        return [fn["name"] for fn in app["functions"].values()]
 
     def get_apps_for_function(self, fn_name: str) -> List[str]:
-        fn_norm = self._normalize(fn_name)
-        apps = []
-        for edge in self.app_function_edges:
-            edge_app, edge_fn = self._parse_edge(edge)
-            if self._normalize(edge_fn) == fn_norm:
-                apps.append(edge_app)
-        print(f"[DEBUG] get_apps_for_function('{fn_name}') -> {apps}")
-        return apps
+        fn_name_norm = self._normalize(fn_name)
+        return self.functions.get(fn_name_norm, [])
 
     def get_variables_for_function(self, fn_name: str) -> List[str]:
-        fn_norm = self._normalize(fn_name)
-        vars_ = []
-        for edge in self.function_variable_edges:
-            edge_fn, edge_var = self._parse_edge(edge, fn_var=True)
-            if self._normalize(edge_fn) == fn_norm:
-                vars_.append(edge_var)
-        print(f"[DEBUG] get_variables_for_function('{fn_name}') -> {vars_}")
-        return vars_
-
-    def get_functions_for_variable(self, var_name: str) -> List[str]:
-        var_norm = self._normalize(var_name)
-        funcs = []
-        for edge in self.function_variable_edges:
-            edge_fn, edge_var = self._parse_edge(edge, fn_var=True)
-            if self._normalize(edge_var) == var_norm:
-                funcs.append(edge_fn)
-        print(f"[DEBUG] get_functions_for_variable('{var_name}') -> {funcs}")
-        return funcs
+        fn_name_norm = self._normalize(fn_name)
+        apps = self.functions.get(fn_name_norm, [])
+        variables = []
+        for app_name in apps:
+            app_name_norm = self._normalize(app_name)
+            fn = self.apps[app_name_norm]["functions"].get(fn_name_norm)
+            if fn:
+                variables.extend(fn.get("variables", []))
+        return variables
 
     def get_app_structure(self, app_name: str) -> Dict[str, List[str]]:
-        app_norm = self._normalize(app_name)
+        app_name_norm = self._normalize(app_name)
+        app = self.apps.get(app_name_norm)
+        if not app:
+            return {}
         structure = {}
-        for edge in self.app_function_edges:
-            edge_app, edge_fn = self._parse_edge(edge)
-            if self._normalize(edge_app) == app_norm:
-                structure[edge_fn] = self.get_variables_for_function(edge_fn)
-        print(f"[DEBUG] get_app_structure('{app_name}') -> {structure}")
+        for fn in app["functions"].values():
+            structure[fn["name"]] = fn.get("variables", [])
         return structure
-
-    # ---------------- Edge parser ----------------
-    def _parse_edge(self, edge, fn_var=False):
-        """
-        Convert edge to (app, function) or (function, variable)
-        """
-        if isinstance(edge, dict):
-            if fn_var:
-                return self._get_name(edge.get("function", {})), self._get_name(edge.get("variable", {}))
-            else:
-                return self._get_name(edge.get("app", {})), self._get_name(edge.get("function", {}))
-        elif isinstance(edge, (list, tuple)) and len(edge) >= 2:
-            return edge[0], edge[1]
-        else:
-            return "", ""
