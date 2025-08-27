@@ -16,6 +16,7 @@ class GraphQuery:
         self.variables = self.data.get("variables", [])
 
     def _normalize(self, name: str) -> str:
+        """Normalize names for matching (case and space insensitive)"""
         return name.strip().lower().replace(" ", "_")
 
     # ---------------- List all ----------------
@@ -58,6 +59,7 @@ class GraphQuery:
         ]
 
     def get_app_structure(self, app_name: str) -> Dict[str, List[str]]:
+        """Return a mapping of function -> variables for a given app"""
         app_norm = self._normalize(app_name)
         structure = {}
         for edge in self.app_function_edges:
