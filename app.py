@@ -16,7 +16,6 @@ app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
 graph = GraphQuery("graph_data.json")
 
 # ---------------- Endpoints ----------------
-
 @app.get("/apps", response_model=List[str])
 def list_apps():
     apps = graph.list_apps()
