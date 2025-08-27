@@ -16,23 +16,12 @@ app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
 graph = GraphQuery("graph_data.json")
 
 # ---------------- Endpoints ----------------
+
 @app.get("/apps", response_model=List[str])
 def list_apps():
     apps = graph.list_apps()
     print(f"[DEBUG] Available apps: {apps}")
     return apps
-
-@app.get("/functions", response_model=List[str])
-def list_functions():
-    funcs = graph.list_functions()
-    print(f"[DEBUG] Available functions: {funcs}")
-    return funcs
-
-@app.get("/variables", response_model=List[str])
-def list_variables():
-    vars_ = graph.list_variables()
-    print(f"[DEBUG] Available variables: {vars_}")
-    return vars_
 
 @app.get("/functions/{app_name}", response_model=List[str])
 def functions_by_app(app_name: str):
@@ -69,7 +58,7 @@ def funcs_by_variable(var_name: str):
     print(f"[DEBUG] Found functions: {result}")
     return result
 
-# ---------------- Run block ----------------
+# ---------------- Run ----------------
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=5000, log_level="info")
