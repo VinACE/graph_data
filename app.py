@@ -16,6 +16,7 @@ app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
 graph = GraphQuery("graph_data.json")
 
 # ---------------- Endpoints ----------------
+
 @app.get("/apps", response_model=List[str])
 def list_apps():
     apps = graph.list_apps()
@@ -52,8 +53,16 @@ def vars_by_app(app_name: str):
 
 @app.get("/functions/variable/{var_name}", response_model=List[str])
 def funcs_by_variable(var_name: str):
+    # Return functions that contain this variable
+    var_lower = var_name.strip().lower()
+    result = []
+    for app_name in graph.list_apps():
+        functions = graph.get_functions_for_app(app_name)
+        for fn in functions:
+            variables = graph.get_variables_for_function(fn)
+            if var_lower in [v.lower() for v in variables]:
+                result.append(fn)
     print(f"[DEBUG] Requested variable name: {var_name}")
-    result = graph.get_functions_for_variable(var_name)
     print(f"[DEBUG] Found functions: {result}")
     return result
 
