@@ -16,6 +16,7 @@ class GraphQuery:
         print("[DEBUG] Applications:", [self._get_name(a) for a in self.applications])
         print("[DEBUG] Functions:", [self._get_name(f) for f in self.functions])
 
+    # ---------------- Helper methods ----------------
     def _normalize(self, name: str) -> str:
         """Lowercase and replace spaces/hyphens with underscores"""
         return name.strip().lower().replace(" ", "_").replace("-", "_")
@@ -42,13 +43,7 @@ class GraphQuery:
         app_norm = self._normalize(app_name)
         funcs = []
         for edge in self.app_function_edges:
-            if isinstance(edge, dict):
-                edge_app = self._get_name(edge.get("app", {}))
-                edge_fn = self._get_name(edge.get("function", {}))
-            elif isinstance(edge, (list, tuple)):
-                edge_app, edge_fn = edge[0], edge[1]
-            else:
-                continue
+            edge_app, edge_fn = self._parse_edge(edge)
             if self._normalize(edge_app) == app_norm:
                 funcs.append(edge_fn)
         print(f"[DEBUG] get_functions_for_app('{app_name}') -> {funcs}")
@@ -58,13 +53,7 @@ class GraphQuery:
         fn_norm = self._normalize(fn_name)
         apps = []
         for edge in self.app_function_edges:
-            if isinstance(edge, dict):
-                edge_app = self._get_name(edge.get("app", {}))
-                edge_fn = self._get_name(edge.get("function", {}))
-            elif isinstance(edge, (list, tuple)):
-                edge_app, edge_fn = edge[0], edge[1]
-            else:
-                continue
+            edge_app, edge_fn = self._parse_edge(edge)
             if self._normalize(edge_fn) == fn_norm:
                 apps.append(edge_app)
         print(f"[DEBUG] get_apps_for_function('{fn_name}') -> {apps}")
@@ -74,13 +63,7 @@ class GraphQuery:
         fn_norm = self._normalize(fn_name)
         vars_ = []
         for edge in self.function_variable_edges:
-            if isinstance(edge, dict):
-                edge_fn = self._get_name(edge.get("function", {}))
-                edge_var = self._get_name(edge.get("variable", {}))
-            elif isinstance(edge, (list, tuple)):
-                edge_fn, edge_var = edge[0], edge[1]
-            else:
-                continue
+            edge_fn, edge_var = self._parse_edge(edge, fn_var=True)
             if self._normalize(edge_fn) == fn_norm:
                 vars_.append(edge_var)
         print(f"[DEBUG] get_variables_for_function('{fn_name}') -> {vars_}")
@@ -90,13 +73,7 @@ class GraphQuery:
         var_norm = self._normalize(var_name)
         funcs = []
         for edge in self.function_variable_edges:
-            if isinstance(edge, dict):
-                edge_fn = self._get_name(edge.get("function", {}))
-                edge_var = self._get_name(edge.get("variable", {}))
-            elif isinstance(edge, (list, tuple)):
-                edge_fn, edge_var = edge[0], edge[1]
-            else:
-                continue
+            edge_fn, edge_var = self._parse_edge(edge, fn_var=True)
             if self._normalize(edge_var) == var_norm:
                 funcs.append(edge_fn)
         print(f"[DEBUG] get_functions_for_variable('{var_name}') -> {funcs}")
@@ -106,14 +83,23 @@ class GraphQuery:
         app_norm = self._normalize(app_name)
         structure = {}
         for edge in self.app_function_edges:
-            if isinstance(edge, dict):
-                edge_app = self._get_name(edge.get("app", {}))
-                edge_fn = self._get_name(edge.get("function", {}))
-            elif isinstance(edge, (list, tuple)):
-                edge_app, edge_fn = edge[0], edge[1]
-            else:
-                continue
+            edge_app, edge_fn = self._parse_edge(edge)
             if self._normalize(edge_app) == app_norm:
                 structure[edge_fn] = self.get_variables_for_function(edge_fn)
         print(f"[DEBUG] get_app_structure('{app_name}') -> {structure}")
         return structure
+
+    # ---------------- Edge parser ----------------
+    def _parse_edge(self, edge, fn_var=False):
+        """
+        Convert edge to (app, function) or (function, variable)
+        """
+        if isinstance(edge, dict):
+            if fn_var:
+                return self._get_name(edge.get("function", {})), self._get_name(edge.get("variable", {}))
+            else:
+                return self._get_name(edge.get("app", {})), self._get_name(edge.get("function", {}))
+        elif isinstance(edge, (list, tuple)) and len(edge) >= 2:
+            return edge[0], edge[1]
+        else:
+            return "", ""
