@@ -13,6 +13,17 @@ class GraphQuery:
         self.functions = self.data.get("functions", [])
         self.variables = self.data.get("variables", [])
 
+        # ---- DEBUG: print all edges on startup ----
+        print("[DEBUG] Applications:", [self._get_name(a) for a in self.applications])
+        print("[DEBUG] Functions:", [self._get_name(f) for f in self.functions])
+        print("[DEBUG] Variables:", [self._get_name(v) for v in self.variables])
+        print("[DEBUG] App-Function Edges:")
+        for edge in self.app_function_edges:
+            print("  ", edge)
+        print("[DEBUG] Function-Variable Edges:")
+        for edge in self.function_variable_edges:
+            print("  ", edge)
+
     def _normalize(self, name: str) -> str:
         """Normalize names: strip spaces, lowercase, replace spaces with underscores"""
         return name.strip().lower().replace(" ", "_")
@@ -44,6 +55,7 @@ class GraphQuery:
             edge_fn_name = self._get_name(edge.get("function") if isinstance(edge, dict) else edge[1])
             if self._normalize(edge_app_name) == app_norm:
                 funcs.append(edge_fn_name)
+        print(f"[DEBUG] get_functions_for_app('{app_name}') -> {funcs}")
         return funcs
 
     def get_apps_for_function(self, fn_name: str) -> List[str]:
@@ -54,6 +66,7 @@ class GraphQuery:
             edge_fn_name = self._get_name(edge.get("function") if isinstance(edge, dict) else edge[1])
             if self._normalize(edge_fn_name) == fn_norm:
                 apps.append(edge_app_name)
+        print(f"[DEBUG] get_apps_for_function('{fn_name}') -> {apps}")
         return apps
 
     def get_variables_for_function(self, fn_name: str) -> List[str]:
@@ -64,6 +77,7 @@ class GraphQuery:
             edge_var_name = self._get_name(edge.get("variable") if isinstance(edge, dict) else edge[1])
             if self._normalize(edge_fn_name) == fn_norm:
                 vars_.append(edge_var_name)
+        print(f"[DEBUG] get_variables_for_function('{fn_name}') -> {vars_}")
         return vars_
 
     def get_functions_for_variable(self, var_name: str) -> List[str]:
@@ -74,10 +88,10 @@ class GraphQuery:
             edge_var_name = self._get_name(edge.get("variable") if isinstance(edge, dict) else edge[1])
             if self._normalize(edge_var_name) == var_norm:
                 funcs.append(edge_fn_name)
+        print(f"[DEBUG] get_functions_for_variable('{var_name}') -> {funcs}")
         return funcs
 
     def get_app_structure(self, app_name: str) -> Dict[str, List[str]]:
-        """Return a mapping of function -> variables for a given app"""
         app_norm = self._normalize(app_name)
         structure = {}
         for edge in self.app_function_edges:
@@ -85,4 +99,5 @@ class GraphQuery:
             edge_fn_name = self._get_name(edge.get("function") if isinstance(edge, dict) else edge[1])
             if self._normalize(edge_app_name) == app_norm:
                 structure[edge_fn_name] = self.get_variables_for_function(edge_fn_name)
+        print(f"[DEBUG] get_app_structure('{app_name}') -> {structure}")
         return structure
