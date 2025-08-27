@@ -1,208 +1,84 @@
 {
   "applications": [
-    {"id": "A1", "name": "InventorySystem"},
-    {"id": "A2", "name": "EcommercePlatform"},
-    {"id": "A3", "name": "HRManagement"},
-    {"id": "A4", "name": "BankingApp"},
-    {"id": "A5", "name": "HealthcareSystem"},
-    {"id": "A6", "name": "LearningPlatform"},
-    {"id": "A7", "name": "TravelBooking"},
-    {"id": "A8", "name": "MessagingApp"},
-    {"id": "A9", "name": "SocialNetwork"},
-    {"id": "A10", "name": "AnalyticsDashboard"}
-  ],
-  "functions": [
-    {"id": "F1", "name": "addItem"},
-    {"id": "F2", "name": "removeItem"},
-    {"id": "F3", "name": "updateStock"},
-    {"id": "F4", "name": "listItems"},
-
-    {"id": "F5", "name": "checkout"},
-    {"id": "F6", "name": "applyDiscount"},
-    {"id": "F7", "name": "processPayment"},
-    {"id": "F8", "name": "viewOrderHistory"},
-
-    {"id": "F9", "name": "hireEmployee"},
-    {"id": "F10", "name": "processPayroll"},
-    {"id": "F11", "name": "approveLeave"},
-    {"id": "F12", "name": "terminateEmployee"},
-
-    {"id": "F13", "name": "transferFunds"},
-    {"id": "F14", "name": "calculateInterest"},
-    {"id": "F15", "name": "openAccount"},
-    {"id": "F16", "name": "closeAccount"},
-
-    {"id": "F17", "name": "bookAppointment"},
-    {"id": "F18", "name": "updateMedicalRecord"},
-    {"id": "F19", "name": "assignDoctor"},
-    {"id": "F20", "name": "issuePrescription"},
-
-    {"id": "F21", "name": "enrollCourse"},
-    {"id": "F22", "name": "gradeAssignment"},
-    {"id": "F23", "name": "scheduleLecture"},
-    {"id": "F24", "name": "trackProgress"},
-
-    {"id": "F25", "name": "searchFlights"},
-    {"id": "F26", "name": "reserveHotel"},
-    {"id": "F27", "name": "cancelBooking"},
-    {"id": "F28", "name": "generateItinerary"},
-
-    {"id": "F29", "name": "sendMessage"},
-    {"id": "F30", "name": "createGroup"},
-    {"id": "F31", "name": "deleteMessage"},
-    {"id": "F32", "name": "searchChatHistory"},
-
-    {"id": "F33", "name": "addFriend"},
-    {"id": "F34", "name": "postStatus"},
-    {"id": "F35", "name": "likePost"},
-    {"id": "F36", "name": "shareContent"},
-
-    {"id": "F37", "name": "generateReport"},
-    {"id": "F38", "name": "trackMetrics"},
-    {"id": "F39", "name": "exportData"},
-    {"id": "F40", "name": "visualizeTrends"}
-  ],
-  "variables": [
-    {"id": "V1", "name": "itemId"},
-    {"id": "V2", "name": "quantity"},
-    {"id": "V3", "name": "userId"},
-    {"id": "V4", "name": "orderId"},
-    {"id": "V5", "name": "accountNumber"},
-    {"id": "V6", "name": "amount"},
-    {"id": "V7", "name": "employeeId"},
-    {"id": "V8", "name": "leaveDays"},
-    {"id": "V9", "name": "courseId"},
-    {"id": "V10", "name": "grade"},
-    {"id": "V11", "name": "appointmentId"},
-    {"id": "V12", "name": "doctorId"},
-    {"id": "V13", "name": "flightId"},
-    {"id": "V14", "name": "hotelId"},
-    {"id": "V15", "name": "messageId"},
-    {"id": "V16", "name": "groupId"},
-    {"id": "V17", "name": "postId"},
-    {"id": "V18", "name": "metricsId"},
-    {"id": "V19", "name": "reportId"},
-    {"id": "V20", "name": "trendId"}
-  ],
-  "app_function_edges": [
-    {"app": "A1", "function": "F1"},
-    {"app": "A1", "function": "F2"},
-    {"app": "A1", "function": "F3"},
-    {"app": "A1", "function": "F4"},
-
-    {"app": "A2", "function": "F5"},
-    {"app": "A2", "function": "F6"},
-    {"app": "A2", "function": "F7"},
-    {"app": "A2", "function": "F8"},
-
-    {"app": "A3", "function": "F9"},
-    {"app": "A3", "function": "F10"},
-    {"app": "A3", "function": "F11"},
-    {"app": "A3", "function": "F12"},
-
-    {"app": "A4", "function": "F13"},
-    {"app": "A4", "function": "F14"},
-    {"app": "A4", "function": "F15"},
-    {"app": "A4", "function": "F16"},
-
-    {"app": "A5", "function": "F17"},
-    {"app": "A5", "function": "F18"},
-    {"app": "A5", "function": "F19"},
-    {"app": "A5", "function": "F20"},
-
-    {"app": "A6", "function": "F21"},
-    {"app": "A6", "function": "F22"},
-    {"app": "A6", "function": "F23"},
-    {"app": "A6", "function": "F24"},
-
-    {"app": "A7", "function": "F25"},
-    {"app": "A7", "function": "F26"},
-    {"app": "A7", "function": "F27"},
-    {"app": "A7", "function": "F28"},
-    {"app": "A7", "function": "F5"},   
-
-    {"app": "A8", "function": "F29"},
-    {"app": "A8", "function": "F30"},
-    {"app": "A8", "function": "F31"},
-    {"app": "A8", "function": "F32"},
-
-    {"app": "A9", "function": "F33"},
-    {"app": "A9", "function": "F34"},
-    {"app": "A9", "function": "F35"},
-    {"app": "A9", "function": "F36"},
-
-    {"app": "A10", "function": "F37"},
-    {"app": "A10", "function": "F38"},
-    {"app": "A10", "function": "F39"},
-    {"app": "A10", "function": "F40"},
-    {"app": "A10", "function": "F5"}  
-  ],
-  "function_variable_edges": [
-    {"function": "F1", "variable": "V1"},
-    {"function": "F1", "variable": "V2"},
-    {"function": "F2", "variable": "V1"},
-    {"function": "F3", "variable": "V1"},
-    {"function": "F3", "variable": "V2"},
-    {"function": "F4", "variable": "V1"},
-
-    {"function": "F5", "variable": "V3"},
-    {"function": "F5", "variable": "V4"},
-    {"function": "F6", "variable": "V4"},
-    {"function": "F7", "variable": "V5"},
-    {"function": "F7", "variable": "V6"},
-    {"function": "F8", "variable": "V3"},
-
-    {"function": "F9", "variable": "V7"},
-    {"function": "F10", "variable": "V7"},
-    {"function": "F10", "variable": "V6"},
-    {"function": "F11", "variable": "V7"},
-    {"function": "F11", "variable": "V8"},
-    {"function": "F12", "variable": "V7"},
-
-    {"function": "F13", "variable": "V5"},
-    {"function": "F13", "variable": "V6"},
-    {"function": "F14", "variable": "V6"},
-    {"function": "F15", "variable": "V5"},
-    {"function": "F16", "variable": "V5"},
-
-    {"function": "F17", "variable": "V11"},
-    {"function": "F17", "variable": "V3"},
-    {"function": "F18", "variable": "V11"},
-    {"function": "F18", "variable": "V12"},
-    {"function": "F19", "variable": "V12"},
-    {"function": "F20", "variable": "V11"},
-
-    {"function": "F21", "variable": "V9"},
-    {"function": "F21", "variable": "V3"},
-    {"function": "F22", "variable": "V9"},
-    {"function": "F22", "variable": "V10"},
-    {"function": "F23", "variable": "V9"},
-    {"function": "F24", "variable": "V3"},
-
-    {"function": "F25", "variable": "V13"},
-    {"function": "F25", "variable": "V3"},
-    {"function": "F26", "variable": "V14"},
-    {"function": "F26", "variable": "V3"},
-    {"function": "F27", "variable": "V13"},
-    {"function": "F28", "variable": "V13"},
-    {"function": "F28", "variable": "V14"},
-
-    {"function": "F29", "variable": "V15"},
-    {"function": "F29", "variable": "V3"},
-    {"function": "F30", "variable": "V16"},
-    {"function": "F31", "variable": "V15"},
-    {"function": "F32", "variable": "V3"},
-
-    {"function": "F33", "variable": "V3"},
-    {"function": "F34", "variable": "V17"},
-    {"function": "F34", "variable": "V3"},
-    {"function": "F35", "variable": "V17"},
-    {"function": "F35", "variable": "V3"},
-    {"function": "F36", "variable": "V17"},
-
-    {"function": "F37", "variable": "V19"},
-    {"function": "F38", "variable": "V18"},
-    {"function": "F39", "variable": "V19"},
-    {"function": "F40", "variable": "V20"}
+    {
+      "name": "InventorySystem",
+      "functions": [
+        {"name": "addItem", "variables": ["itemName", "quantity", "price"]},
+        {"name": "removeItem", "variables": ["itemName", "quantity"]},
+        {"name": "updateStock", "variables": ["itemName", "newQuantity"]}
+      ]
+    },
+    {
+      "name": "EcommercePlatform",
+      "functions": [
+        {"name": "processOrder", "variables": ["orderId", "paymentMethod"]},
+        {"name": "cancelOrder", "variables": ["orderId", "reason"]},
+        {"name": "refundOrder", "variables": ["orderId", "amount"]}
+      ]
+    },
+    {
+      "name": "HRManagement",
+      "functions": [
+        {"name": "hireEmployee", "variables": ["employeeName", "position"]},
+        {"name": "terminateEmployee", "variables": ["employeeId", "reason"]},
+        {"name": "approveLeave", "variables": ["employeeId", "days"]}
+      ]
+    },
+    {
+      "name": "BankingApp",
+      "functions": [
+        {"name": "transferFunds", "variables": ["fromAccount", "toAccount", "amount"]},
+        {"name": "openAccount", "variables": ["customerName", "accountType"]},
+        {"name": "closeAccount", "variables": ["accountNumber"]}
+      ]
+    },
+    {
+      "name": "HealthcareSystem",
+      "functions": [
+        {"name": "bookAppointment", "variables": ["patientId", "doctorId", "time"]},
+        {"name": "issuePrescription", "variables": ["patientId", "medications"]},
+        {"name": "updateMedicalRecord", "variables": ["patientId", "record"]}
+      ]
+    },
+    {
+      "name": "LearningPlatform",
+      "functions": [
+        {"name": "enrollCourse", "variables": ["studentId", "courseId"]},
+        {"name": "gradeAssignment", "variables": ["studentId", "assignmentId", "grade"]},
+        {"name": "trackProgress", "variables": ["studentId", "courseId"]}
+      ]
+    },
+    {
+      "name": "TravelBooking",
+      "functions": [
+        {"name": "searchFlights", "variables": ["origin", "destination", "date"]},
+        {"name": "reserveHotel", "variables": ["hotelId", "checkIn", "checkOut"]},
+        {"name": "cancelBooking", "variables": ["bookingId"]}
+      ]
+    },
+    {
+      "name": "MessagingApp",
+      "functions": [
+        {"name": "sendMessage", "variables": ["fromUser", "toUser", "message"]},
+        {"name": "createGroup", "variables": ["groupName", "members"]},
+        {"name": "searchChatHistory", "variables": ["userId", "keywords"]}
+      ]
+    },
+    {
+      "name": "SocialNetwork",
+      "functions": [
+        {"name": "postStatus", "variables": ["userId", "content"]},
+        {"name": "likePost", "variables": ["userId", "postId"]},
+        {"name": "addFriend", "variables": ["userId", "friendId"]}
+      ]
+    },
+    {
+      "name": "AnalyticsDashboard",
+      "functions": [
+        {"name": "generateReport", "variables": ["reportType", "dateRange"]},
+        {"name": "trackMetrics", "variables": ["metricName", "dateRange"]},
+        {"name": "visualizeTrends", "variables": ["metricName", "timePeriod"]}
+      ]
+    }
   ]
 }
