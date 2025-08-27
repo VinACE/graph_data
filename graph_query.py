@@ -6,7 +6,7 @@ class GraphQuery:
         with open(data_file, "r") as f:
             self.data = json.load(f)
 
-        # Edge lists
+        # Edge lists (as objects)
         self.app_function_edges = self.data.get("app_function_edges", [])
         self.function_variable_edges = self.data.get("function_variable_edges", [])
 
@@ -18,6 +18,7 @@ class GraphQuery:
     def _normalize(self, name: str) -> str:
         return name.strip().lower().replace(" ", "_")
 
+    # ---------------- List all ----------------
     def list_apps(self) -> List[str]:
         return [app["name"] for app in self.applications]
 
@@ -27,42 +28,40 @@ class GraphQuery:
     def list_variables(self) -> List[str]:
         return [var["name"] for var in self.variables]
 
+    # ---------------- Queries ----------------
     def get_functions_for_app(self, app_name: str) -> List[str]:
         app_norm = self._normalize(app_name)
-        funcs = [
-            fn for app, fn in self.app_function_edges
-            if self._normalize(app) == app_norm
+        return [
+            edge["function"] for edge in self.app_function_edges
+            if self._normalize(edge["app"]) == app_norm
         ]
-        return funcs
 
     def get_apps_for_function(self, fn_name: str) -> List[str]:
         fn_norm = self._normalize(fn_name)
-        apps = [
-            app for app, fn in self.app_function_edges
-            if self._normalize(fn) == fn_norm
+        return [
+            edge["app"] for edge in self.app_function_edges
+            if self._normalize(edge["function"]) == fn_norm
         ]
-        return apps
 
     def get_variables_for_function(self, fn_name: str) -> List[str]:
         fn_norm = self._normalize(fn_name)
-        vars_ = [
-            var for fn, var in self.function_variable_edges
-            if self._normalize(fn) == fn_norm
+        return [
+            edge["variable"] for edge in self.function_variable_edges
+            if self._normalize(edge["function"]) == fn_norm
         ]
-        return vars_
 
     def get_functions_for_variable(self, var_name: str) -> List[str]:
         var_norm = self._normalize(var_name)
-        funcs = [
-            fn for fn, var in self.function_variable_edges
-            if self._normalize(var) == var_norm
+        return [
+            edge["function"] for edge in self.function_variable_edges
+            if self._normalize(edge["variable"]) == var_norm
         ]
-        return funcs
 
     def get_app_structure(self, app_name: str) -> Dict[str, List[str]]:
         app_norm = self._normalize(app_name)
         structure = {}
-        for app, fn in self.app_function_edges:
-            if self._normalize(app) == app_norm:
-                structure[fn] = self.get_variables_for_function(fn)
+        for edge in self.app_function_edges:
+            if self._normalize(edge["app"]) == app_norm:
+                fn_name = edge["function"]
+                structure[fn_name] = self.get_variables_for_function(fn_name)
         return structure
