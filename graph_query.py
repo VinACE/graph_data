@@ -10,11 +10,13 @@ class GraphQuery:
     def _normalize(self, name: str) -> str:
         """Normalize names: lowercase, convert CamelCase and spaces to underscores"""
         name = name.strip()
-        # CamelCase to underscores
         s1 = re.sub(r'(.)([A-Z][a-z]+)', r'\1_\2', name)
         s2 = re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', s1)
-        # Replace spaces with underscores and lowercase
         return s2.replace(" ", "_").lower()
+
+    def list_apps(self) -> List[str]:
+        """Return all app names"""
+        return list(self.data.keys())
 
     def get_functions_for_app(self, app_name: str) -> List[str]:
         app_name_norm = self._normalize(app_name)
