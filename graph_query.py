@@ -35,28 +35,4 @@ class GraphQuery:
         return apps
 
     def get_variables_for_function(self, fn_name: str) -> List[str]:
-        fn_name_norm = self._normalize(fn_name)
-        vars_list = []
-        for app in self.data.values():
-            variables = app.get("variables", {})
-            for func, vars_ in variables.items():
-                if self._normalize(func) == fn_name_norm:
-                    vars_list.extend(vars_)
-        return vars_list
-
-    def get_app_structure(self, app_name: str) -> Dict[str, List[str]]:
-        app_name_norm = self._normalize(app_name)
-        for key, value in self.data.items():
-            if self._normalize(key) == app_name_norm:
-                return value.get("variables", {})
-        return {}
-
-    def get_functions_for_variable(self, var_name: str) -> List[str]:
-        var_name_norm = self._normalize(var_name)
-        funcs = []
-        for app in self.data.values():
-            variables = app.get("variables", {})
-            for func, vars_ in variables.items():
-                if var_name_norm in [self._normalize(v) for v in vars_]:
-                    funcs.append(func)
-        return funcs
+        fn_name_norm =
