@@ -17,6 +17,7 @@ class GraphQuery:
         print("[DEBUG] Functions:", [self._get_name(f) for f in self.functions])
 
     def _normalize(self, name: str) -> str:
+        """Lowercase and replace spaces/hyphens with underscores"""
         return name.strip().lower().replace(" ", "_").replace("-", "_")
 
     def _get_name(self, obj):
@@ -38,86 +39,81 @@ class GraphQuery:
 
     # ---------------- Queries ----------------
     def get_functions_for_app(self, app_name: str) -> List[str]:
-        app_name_norm = self._normalize(app_name)
+        app_norm = self._normalize(app_name)
         funcs = []
         for edge in self.app_function_edges:
             if isinstance(edge, dict):
-                edge_app = self._normalize(self._get_name(edge.get("app", {})))
-                edge_fn = self._normalize(self._get_name(edge.get("function", {})))
-            elif isinstance(edge, list) or isinstance(edge, tuple):
-                edge_app = self._normalize(edge[0])
-                edge_fn = self._normalize(edge[1])
+                edge_app = self._get_name(edge.get("app", {}))
+                edge_fn = self._get_name(edge.get("function", {}))
+            elif isinstance(edge, (list, tuple)):
+                edge_app, edge_fn = edge[0], edge[1]
             else:
                 continue
-            if edge_app == app_name_norm:
+            if self._normalize(edge_app) == app_norm:
                 funcs.append(edge_fn)
         print(f"[DEBUG] get_functions_for_app('{app_name}') -> {funcs}")
         return funcs
 
     def get_apps_for_function(self, fn_name: str) -> List[str]:
-        fn_name_norm = self._normalize(fn_name)
+        fn_norm = self._normalize(fn_name)
         apps = []
         for edge in self.app_function_edges:
             if isinstance(edge, dict):
-                edge_app = self._normalize(self._get_name(edge.get("app", {})))
-                edge_fn = self._normalize(self._get_name(edge.get("function", {})))
-            elif isinstance(edge, list) or isinstance(edge, tuple):
-                edge_app = self._normalize(edge[0])
-                edge_fn = self._normalize(edge[1])
+                edge_app = self._get_name(edge.get("app", {}))
+                edge_fn = self._get_name(edge.get("function", {}))
+            elif isinstance(edge, (list, tuple)):
+                edge_app, edge_fn = edge[0], edge[1]
             else:
                 continue
-            if edge_fn == fn_name_norm:
+            if self._normalize(edge_fn) == fn_norm:
                 apps.append(edge_app)
         print(f"[DEBUG] get_apps_for_function('{fn_name}') -> {apps}")
         return apps
 
     def get_variables_for_function(self, fn_name: str) -> List[str]:
-        fn_name_norm = self._normalize(fn_name)
+        fn_norm = self._normalize(fn_name)
         vars_ = []
         for edge in self.function_variable_edges:
             if isinstance(edge, dict):
-                edge_fn = self._normalize(self._get_name(edge.get("function", {})))
-                edge_var = self._normalize(self._get_name(edge.get("variable", {})))
-            elif isinstance(edge, list) or isinstance(edge, tuple):
-                edge_fn = self._normalize(edge[0])
-                edge_var = self._normalize(edge[1])
+                edge_fn = self._get_name(edge.get("function", {}))
+                edge_var = self._get_name(edge.get("variable", {}))
+            elif isinstance(edge, (list, tuple)):
+                edge_fn, edge_var = edge[0], edge[1]
             else:
                 continue
-            if edge_fn == fn_name_norm:
+            if self._normalize(edge_fn) == fn_norm:
                 vars_.append(edge_var)
         print(f"[DEBUG] get_variables_for_function('{fn_name}') -> {vars_}")
         return vars_
 
     def get_functions_for_variable(self, var_name: str) -> List[str]:
-        var_name_norm = self._normalize(var_name)
+        var_norm = self._normalize(var_name)
         funcs = []
         for edge in self.function_variable_edges:
             if isinstance(edge, dict):
-                edge_fn = self._normalize(self._get_name(edge.get("function", {})))
-                edge_var = self._normalize(self._get_name(edge.get("variable", {})))
-            elif isinstance(edge, list) or isinstance(edge, tuple):
-                edge_fn = self._normalize(edge[0])
-                edge_var = self._normalize(edge[1])
+                edge_fn = self._get_name(edge.get("function", {}))
+                edge_var = self._get_name(edge.get("variable", {}))
+            elif isinstance(edge, (list, tuple)):
+                edge_fn, edge_var = edge[0], edge[1]
             else:
                 continue
-            if edge_var == var_name_norm:
+            if self._normalize(edge_var) == var_norm:
                 funcs.append(edge_fn)
         print(f"[DEBUG] get_functions_for_variable('{var_name}') -> {funcs}")
         return funcs
 
     def get_app_structure(self, app_name: str) -> Dict[str, List[str]]:
-        app_name_norm = self._normalize(app_name)
+        app_norm = self._normalize(app_name)
         structure = {}
         for edge in self.app_function_edges:
             if isinstance(edge, dict):
-                edge_app = self._normalize(self._get_name(edge.get("app", {})))
-                edge_fn = self._normalize(self._get_name(edge.get("function", {})))
-            elif isinstance(edge, list) or isinstance(edge, tuple):
-                edge_app = self._normalize(edge[0])
-                edge_fn = self._normalize(edge[1])
+                edge_app = self._get_name(edge.get("app", {}))
+                edge_fn = self._get_name(edge.get("function", {}))
+            elif isinstance(edge, (list, tuple)):
+                edge_app, edge_fn = edge[0], edge[1]
             else:
                 continue
-            if edge_app == app_name_norm:
+            if self._normalize(edge_app) == app_norm:
                 structure[edge_fn] = self.get_variables_for_function(edge_fn)
         print(f"[DEBUG] get_app_structure('{app_name}') -> {structure}")
         return structure
