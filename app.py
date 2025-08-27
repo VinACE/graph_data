@@ -9,13 +9,20 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# Mount frontend
+# Mount frontend folder
 app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
 
 # Initialize GraphQuery
 graph = GraphQuery("graph_data.json")
 
-# ---------------- Endpoints with debug ----------------
+# ---------------- Endpoints ----------------
+
+@app.get("/apps", response_model=List[str])
+def list_apps():
+    """List all available apps"""
+    apps = graph.list_apps()
+    print(f"[DEBUG] Available apps: {apps}")
+    return apps
 
 @app.get("/functions/{app_name}", response_model=List[str])
 def functions_by_app(app_name: str):
