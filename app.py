@@ -23,6 +23,18 @@ def list_apps():
     print(f"[DEBUG] Available apps: {apps}")
     return apps
 
+@app.get("/functions", response_model=List[str])
+def list_functions():
+    funcs = graph.list_functions()
+    print(f"[DEBUG] Available functions: {funcs}")
+    return funcs
+
+@app.get("/variables", response_model=List[str])
+def list_variables():
+    vars_ = graph.list_variables()
+    print(f"[DEBUG] Available variables: {vars_}")
+    return vars_
+
 @app.get("/functions/{app_name}", response_model=List[str])
 def functions_by_app(app_name: str):
     print(f"[DEBUG] Requested app name: {app_name}")
