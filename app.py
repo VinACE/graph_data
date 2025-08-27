@@ -1,75 +1,69 @@
-from fastapi import FastAPI
+import json
 from typing import List, Dict
-from fastapi.staticfiles import StaticFiles
-from graph_query import GraphQuery
 
-app = FastAPI(
-    title="Graph Data API",
-    description="REST API for querying applications, functions, and variables from a graph dataset.",
-    version="1.0.0",
-)
+class GraphQuery:
+    def __init__(self, data_file: str):
+        with open(data_file, "r") as f:
+            self.data = json.load(f)
 
-# Mount frontend folder
-app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
+        # Edge lists (as objects)
+        self.app_function_edges = self.data.get("app_function_edges", [])
+        self.function_variable_edges = self.data.get("function_variable_edges", [])
 
-# Initialize GraphQuery
-graph = GraphQuery("graph_data.json")
+        # Original objects
+        self.applications = self.data.get("applications", [])
+        self.functions = self.data.get("functions", [])
+        self.variables = self.data.get("variables", [])
 
-# ---------------- Endpoints ----------------
-@app.get("/apps", response_model=List[str])
-def list_apps():
-    apps = graph.list_apps()
-    print(f"[DEBUG] Available apps: {apps}")
-    return apps
+    def _normalize(self, name: str) -> str:
+        """Normalize names for matching (case and space insensitive)"""
+        return name.strip().lower().replace(" ", "_")
 
-@app.get("/functions", response_model=List[str])
-def list_functions():
-    funcs = graph.list_functions()
-    print(f"[DEBUG] Available functions: {funcs}")
-    return funcs
+    # ---------------- List all ----------------
+    def list_apps(self) -> List[str]:
+        return [app["name"] for app in self.applications]
 
-@app.get("/variables", response_model=List[str])
-def list_variables():
-    vars_ = graph.list_variables()
-    print(f"[DEBUG] Available variables: {vars_}")
-    return vars_
+    def list_functions(self) -> List[str]:
+        return [fn["name"] for fn in self.functions]
 
-@app.get("/functions/{app_name}", response_model=List[str])
-def functions_by_app(app_name: str):
-    print(f"[DEBUG] Requested app name: {app_name}")
-    result = graph.get_functions_for_app(app_name)
-    print(f"[DEBUG] Found functions: {result}")
-    return result
+    def list_variables(self) -> List[str]:
+        return [var["name"] for var in self.variables]
 
-@app.get("/apps/{fn_name}", response_model=List[str])
-def apps_by_function(fn_name: str):
-    print(f"[DEBUG] Requested function name: {fn_name}")
-    result = graph.get_apps_for_function(fn_name)
-    print(f"[DEBUG] Found apps: {result}")
-    return result
+    # ---------------- Queries ----------------
+    def get_functions_for_app(self, app_name: str) -> List[str]:
+        app_norm = self._normalize(app_name)
+        return [
+            edge["function"] for edge in self.app_function_edges
+            if self._normalize(edge["app"]) == app_norm
+        ]
 
-@app.get("/variables/function/{fn_name}", response_model=List[str])
-def vars_by_function(fn_name: str):
-    print(f"[DEBUG] Requested function name for variables: {fn_name}")
-    result = graph.get_variables_for_function(fn_name)
-    print(f"[DEBUG] Found variables: {result}")
-    return result
+    def get_apps_for_function(self, fn_name: str) -> List[str]:
+        fn_norm = self._normalize(fn_name)
+        return [
+            edge["app"] for edge in self.app_function_edges
+            if self._normalize(edge["function"]) == fn_norm
+        ]
 
-@app.get("/variables/app/{app_name}", response_model=Dict[str, List[str]])
-def vars_by_app(app_name: str):
-    print(f"[DEBUG] Requested app name for variables: {app_name}")
-    result = graph.get_app_structure(app_name)
-    print(f"[DEBUG] Found app structure: {result}")
-    return result
+    def get_variables_for_function(self, fn_name: str) -> List[str]:
+        fn_norm = self._normalize(fn_name)
+        return [
+            edge["variable"] for edge in self.function_variable_edges
+            if self._normalize(edge["function"]) == fn_norm
+        ]
 
-@app.get("/functions/variable/{var_name}", response_model=List[str])
-def funcs_by_variable(var_name: str):
-    print(f"[DEBUG] Requested variable name: {var_name}")
-    result = graph.get_functions_for_variable(var_name)
-    print(f"[DEBUG] Found functions: {result}")
-    return result
+    def get_functions_for_variable(self, var_name: str) -> List[str]:
+        var_norm = self._normalize(var_name)
+        return [
+            edge["function"] for edge in self.function_variable_edges
+            if self._normalize(edge["variable"]) == var_norm
+        ]
 
-# ---------------- Run block ----------------
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=5000, log_level="info")
+    def get_app_structure(self, app_name: str) -> Dict[str, List[str]]:
+        """Return a mapping of function -> variables for a given app"""
+        app_norm = self._normalize(app_name)
+        structure = {}
+        for edge in self.app_function_edges:
+            if self._normalize(edge["app"]) == app_norm:
+                fn_name = edge["function"]
+                structure[fn_name] = self.get_variables_for_function(fn_name)
+        return structure
